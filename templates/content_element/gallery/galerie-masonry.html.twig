@@ -1,0 +1,47 @@
+{% extends '@Contao/content_element/_base.html.twig' %}
+{% use '@Contao/component/_list.html.twig' %}
+{% use '@Contao/component/_figure.html.twig' %}
+
+{% set attributes = attrs()
+    .addClass("content-#{type}--cols-#{items_per_row|default(4)}")
+    .mergeWith(attributes|default)
+%}
+
+{% block content %}
+    {% with {
+        items: images,
+        list_attributes: attrs().addClass('grid'),
+        item_attributes: attrs().addClass('grid-item')        
+    } %}
+        {{ block('list_component') }}
+    {% endwith %}
+{% endblock %}
+
+{% block list_item %}
+    {% with {figure: item} %}{{ block('figure_component') }}{% endwith %}
+{% endblock %}
+
+{% add 'masonry_scripts' to body %}
+
+    <script src="/files/assets/js/plugins/masonry.pkgd.min.js"></script>
+    <script src="/files/assets/js/plugins/imagesloaded.pkgd.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            document.querySelectorAll('.grid').forEach(grid => {
+
+                imagesLoaded(grid, () => {
+                    new Masonry(grid, {
+                        itemSelector: '.grid-item',
+                        columnWidth: '.grid-item',
+                        percentPosition: true
+                    });
+                });
+
+            });
+
+        });
+    </script>
+
+{% endadd %}
